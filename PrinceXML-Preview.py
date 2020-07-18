@@ -7,7 +7,7 @@ import webbrowser
 import sys
 import os
 import glob
-import threading
+from multiprocessing import Pool
 
 __version__ = "0.1"
 __author__ = "Rafał Karoń <rafalkaron@gmail.com>"
@@ -37,14 +37,9 @@ def preview(output_file):
     webbrowser.open(url=f"file:///{output_file}", new=1, autoraise=False)
 
 def main():
-    # Consider implementing multithreading
+    # Consider implementing multiprocessing
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
     for source_file in files_list(exe_dir(), "html"):
         publish_pdf(source_file)
         preview(source_file.lower().replace(".html", ".pdf"))
 main()
-
-"""
-t2 = threading.Thread(target=httpd.shutdown)
-    t2.start()
-"""
