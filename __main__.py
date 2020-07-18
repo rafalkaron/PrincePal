@@ -46,7 +46,7 @@ def main():
 
     # Multiprocessing
     source_files = files_list(exe_dir(), "html")
-    p = Pool()
+    p = Pool(10)
     p.map(publish_pdf, source_files)
     # p.map(preview, files_list(exe_dir(), "pdf")) # This opens new tabs for every PDF in the current folder now.
     for file in source_files:
