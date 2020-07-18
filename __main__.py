@@ -27,7 +27,12 @@ def publish_pdf(source_file):
 
 def files_list(directory, files_extension):
     """Return a list of files with a given extension in a directory."""
-    files_list = glob.glob(f"{directory}/*.{files_extension}")
+    if os.name == "nt":     # Windows ignores file extension case. Getting uppercase and lowercase lists generates duplicates.
+        files_list = glob.glob(f"{directory}/*.{files_extension}")
+    if os.name == "posix":  # macOS does not ignore file extension case.
+        files_list_lowercase = glob.glob(f"{directory}/*.{files_extension.lower()}")
+        files_list_uppercase = glob.glob(f"{directory}/*.{files_extension.upper()}")
+        files_list = files_list_lowercase + files_list_uppercase
     return files_list
 
 def preview(output_file):
@@ -36,14 +41,12 @@ def preview(output_file):
 
 def main():
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
-
-    # Singleprocessing
     """
+    # Singleprocessing loop
     for source_file in files_list(exe_dir(), "html"):
         publish_pdf(source_file)
         preview(source_file.lower().replace(".html", ".pdf"))
     """
-
     # Multiprocessing
     source_files = files_list(exe_dir(), "html")
     p = Pool(10)
