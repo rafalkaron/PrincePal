@@ -21,15 +21,13 @@ def exe_dir():
         exe_path = os.path.dirname(__file__)
     return exe_path
     
-def publish_pdf(source_files):
+def publish_pdf(source_file):
     """Use the prince command to convert an HTML file to a PDF file."""    
-    os.system(f"prince {source_files}")
+    os.system(f"prince {source_file}")
 
 def files_list(directory, files_extension):
     """Return a list of files with a given extension in a directory."""
-    files_list_lowercase = glob.glob(f"{directory}/*.{files_extension.lower()}")
-    files_list_uppercase = glob.glob(f"{directory}/*.{files_extension.upper()}")
-    files_list = files_list_lowercase + files_list_uppercase
+    files_list = glob.glob(f"{directory}/*.{files_extension}")
     return files_list
 
 def preview(output_file):
@@ -47,12 +45,12 @@ def main():
     """
 
     # Multiprocessing
-    p = Pool()
     source_files = files_list(exe_dir(), "html")
+    p = Pool()
     p.map(publish_pdf, source_files)
-    #p.map(preview, files_list(exe_dir(), "pdf")) # This opens new tabs for every PDF in the current folder now.
-    for output_file in source_files:
-        preview(output_file.lower().replace(".html", ".pdf"))
+    # p.map(preview, files_list(exe_dir(), "pdf")) # This opens new tabs for every PDF in the current folder now.
+    for file in source_files:
+        preview(file.lower().replace(".html", ".pdf"))
     p.close()
     p.join()
 
