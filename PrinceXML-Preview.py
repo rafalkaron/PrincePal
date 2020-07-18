@@ -39,7 +39,22 @@ def preview(output_file):
 def main():
     # Consider implementing multiprocessing
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
-    for source_file in files_list(exe_dir(), "html"):
-        publish_pdf(source_file)
-        preview(source_file.lower().replace(".html", ".pdf"))
+    
+    # Single-processing
+    #for source_file in files_list(exe_dir(), "html"):
+    #    publish_pdf(source_file)
+    #    preview(source_file.lower().replace(".html", ".pdf"))
+
+
+    # Multiprocessing
+    source_files = files_list(exe_dir(), "html")
+    p = Pool()
+    p.map(publish_pdf, source_files)
+    #p.map(preview, source_files.lower().replace(".html", ".pdf"))
+    p.close()
+    p.join()
+
+    for output_file in source_files:
+        preview(output_file.lower().replace(".html", ".pdf"))
+
 main()
