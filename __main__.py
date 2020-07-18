@@ -8,9 +8,8 @@ import sys
 import os
 import glob
 from multiprocessing import Pool
-import re
 
-__version__ = "0.1"
+__version__ = "0.2"
 __author__ = "Rafał Karoń <rafalkaron@gmail.com>"
 
 def exe_dir():
@@ -40,14 +39,14 @@ def preview(output_file):
 def main():
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
 
-    # Singleprocessing - works bot with Python 3.8.2 and Python 3.7.3
+    # Singleprocessing
     """
     for source_file in files_list(exe_dir(), "html"):
         publish_pdf(source_file)
         preview(source_file.lower().replace(".html", ".pdf"))
     """
 
-    # Multiprocessing - does not work with Python 3.8.2. Works correctly with 3.7.3
+    # Multiprocessing
     p = Pool()
     source_files = files_list(exe_dir(), "html")
     p.map(publish_pdf, source_files)
@@ -57,4 +56,5 @@ def main():
     p.close()
     p.join()
 
-main()
+if __name__ == '__main__':    
+    main()
