@@ -1,12 +1,13 @@
 # coding: UTF-8
 """
-Preview your PDFs like a Prince!
+Preview your PDFs like a prince!
 """
 
 import webbrowser
 import sys
 import os
 import glob
+import threading
 
 __version__ = "0.1"
 __author__ = "Rafał Karoń <rafalkaron@gmail.com>"
@@ -21,16 +22,18 @@ def exe_dir():
     return exe_path
     
 def publish_pdf(source_files):
-    """Use Prince XML to publish a PDF from HTML"""    
+    """Use the prince command to convert an HTML file to a PDF file."""    
     os.system(f"prince {source_files}")
 
 def files_list(directory, files_extension):
     """Return a list of files with a given extension in a directory."""
-    files_list = glob.glob(f"{directory}/*.{files_extension.lower()}")
+    files_list_lowercase = glob.glob(f"{directory}/*.{files_extension.lower()}")
+    files_list_uppercase = glob.glob(f"{directory}/*.{files_extension.upper()}")
+    files_list = files_list_lowercase + files_list_uppercase
     return files_list
 
 def preview(output_file):
-    """Open the published PDF in a default application - I suggest using Chrome/Brave"""
+    """Open the converted PDF file in the default application determined by your OS."""
     webbrowser.open(url=f"file:///{output_file}", new=1, autoraise=False)
 
 def main():
@@ -38,7 +41,10 @@ def main():
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
     for source_file in files_list(exe_dir(), "html"):
         publish_pdf(source_file)
-    
-    for output_file in files_list(exe_dir(), "pdf"):
-        preview(output_file)
+        preview(source_file.lower().replace(".html", ".pdf"))
 main()
+
+"""
+t2 = threading.Thread(target=httpd.shutdown)
+    t2.start()
+"""
