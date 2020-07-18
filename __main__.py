@@ -23,7 +23,7 @@ def exe_dir():
     
 def publish_pdf(source_file):
     """Use the prince command to convert an HTML file to a PDF file."""    
-    os.system(f"prince {source_file}")
+    os.system(f"prince \"{source_file}\"")
 
 def files_list(directory, files_extension):
     """Return a list of files with a given extension in a directory."""
