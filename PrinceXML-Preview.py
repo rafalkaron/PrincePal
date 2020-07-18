@@ -1,17 +1,6 @@
 # coding: UTF-8
 """
 Preview your PDFs like a Prince!
-
-Do the following:
-* Install Prince XML on your machine.
-* Create a HTML file and a CSS file in a single directory.
-* Put this script in the HTML file and CSS file directory.
-* Run this script.
-
-Results:
-* Prince renders every HTML file in the script directory to a PDF.
-* Every PDF is opened in the default application that opens PDFs in your OS.
-Note: I recommend setting your default PDF application to a web browser like Chrome or Brave - this way, each way you run this script, a new tab opens and you can quickly compare your CSS edits.
 """
 
 import webbrowser

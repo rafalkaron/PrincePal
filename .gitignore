@@ -132,3 +132,6 @@ dmypy.json
 *.html
 *.css
 *.pdf
+
+# VS code conf.
+.vscode
