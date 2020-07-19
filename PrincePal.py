@@ -77,12 +77,13 @@ def main():
     if args.remove_pdfs:
         """USE WITH CAUTION: Permanently remove PDF files from the script directory."""
         pdfs = files_list(exe_dir(), "pdf")
+        pdfs_bullet_list = "\n * ".join([str(x) for x in pdfs])
         if not args.you_live_only_once:
             if len(pdfs) == 0:
                 print(f"No PDFs in {exe_dir()} to remove. Exiting...")
                 sys.exit(0)
             else:
-                prompt = input(f"Do you want to PERMANENTLY REMOVE the following files: {pdfs} [Y/N]").lower()
+                prompt = input(f"Do you want to PERMANENTLY REMOVE the following files:\n * {pdfs_bullet_list}\nEnter: [Y/N]").lower()
                 if prompt == "y":
                     p.map(os.remove, pdfs)
                     p.close()
