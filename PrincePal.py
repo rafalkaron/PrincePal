@@ -9,7 +9,6 @@ import os
 import glob
 from multiprocessing import Pool
 import argparse
-import send2trash
 
 __version__ = "0.3"
 __author__ = "Rafał Karoń <rafalkaron@gmail.com>"
@@ -43,7 +42,7 @@ def preview_pdf(source_file):
 def main():
     par = argparse.ArgumentParser(description="Preview your PDFs like a prince!")
     par.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
-    par.add_argument("-rm", "--remove_pdfs", action="store_true", help="moves PDF files from the script directory to trash")
+    par.add_argument("-rm", "--remove_pdfs", action="store_true", help="USE WITH CAUTION: moves PDF files from the script directory to trash")
     par.add_argument("-nopr", "--no_preview", action="store_true", help="do not automatically open the HTML file with converted clippings")
     par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent PDF generation or PDF move to trash jobs (defults to 12)")
     args = par.parse_args()
@@ -69,7 +68,8 @@ def main():
     if args.remove_pdfs:
         """Move the PDFs from the script directory to trash."""
         pdfs = files_list(exe_dir(), "pdf")
-        p.map(send2trash.send2trash, pdfs)
+        print(pdfs)
+        p.map(os.remove, pdfs)
         p.close()
         p.join()
 
