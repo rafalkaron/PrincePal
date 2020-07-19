@@ -79,7 +79,7 @@ def main():
         pdfs = files_list(exe_dir(), "pdf")
         if not args.you_live_only_once:
             if len(pdfs) == 0:
-                print("Nothing to remove. Exiting...")
+                print(f"No PDFs in {exe_dir()} to remove. Exiting...")
                 sys.exit(0)
             else:
                 prompt = input(f"Do you want to PERMANENTLY REMOVE the following files: {pdfs} [Y/N]").lower()
@@ -92,7 +92,7 @@ def main():
                     sys.exit(0)
         else:
                 if len(pdfs) == 0:
-                    print("Nothing to remove. Exiting...")
+                    print(f"No PDFs in {exe_dir()} to remove. Exiting...")
                     sys.exit(0)
                 else:
                     p.map(os.remove, pdfs)
