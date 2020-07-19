@@ -45,6 +45,7 @@ def main():
     par.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
     par.add_argument("-rm", "--remove_pdfs", action="store_true", help="USE WITH CAUTION: Permanently remove PDF files from the script directory")
     par.add_argument("-nopr", "--no_preview", action="store_true", help="prevent PDFs from opening after publication")
+    par.add_argument("-nofb", "--no_feedback", action="store_true", help="hides any feedback")
     par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent jobs (defults to 12)")
     args = par.parse_args()
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
@@ -59,11 +60,13 @@ def main():
 
     if not args.remove_pdfs:
         """Publish and open PDFs."""
-        start_time = time.time()
+        if not args.no_feedback:
+            start_time = time.time()
         source_files = files_list(exe_dir(), "html")
         p.map(publish_pdf, source_files)
-        elapsed_time = time.time() - start_time
-        print(f"Converted {len(source_files)} HTML file(s) to PDFs in {int(elapsed_time)} seconds.")
+        if not args.no_feedback:
+            elapsed_time = time.time() - start_time
+            print(f"Converted {len(source_files)} HTML file(s) to PDFs in {int(elapsed_time)} seconds.")
         if not args.no_preview:
             """Prevent PDFs from opening after publication."""
             p.map(preview_pdf, source_files)
