@@ -42,9 +42,9 @@ def preview_pdf(source_file):
 def main():
     par = argparse.ArgumentParser(description="Preview your PDFs like a prince!")
     par.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
-    par.add_argument("-rm", "--remove_pdfs", action="store_true", help="USE WITH CAUTION: moves PDF files from the script directory to trash")
-    par.add_argument("-nopr", "--no_preview", action="store_true", help="do not automatically open the HTML file with converted clippings")
-    par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent PDF generation or PDF move to trash jobs (defults to 12)")
+    par.add_argument("-rm", "--remove_pdfs", action="store_true", help="USE WITH CAUTION: Permanently removes PDF files from the script directory")
+    par.add_argument("-nopr", "--no_preview", action="store_true", help="prevents PDFs from opening after publication")
+    par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent jobs (defults to 12)")
     args = par.parse_args()
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
     if not args.concurrent_jobs:
@@ -57,18 +57,18 @@ def main():
         p = Pool(jobs)
 
     if not args.remove_pdfs:
-        """Default behavior - publish PDFs and open preview."""
+        """Publish and open PDFs."""
         source_files = files_list(exe_dir(), "html")
         p.map(publish_pdf, source_files)
         if not args.no_preview:
+            """Prevent PDFs from opening after publication."""
             p.map(preview_pdf, source_files)
         p.close()
         p.join()
 
     if args.remove_pdfs:
-        """Move the PDFs from the script directory to trash."""
+        """USE WITH CAUTION: Permanently remove PDF files from the script directory."""
         pdfs = files_list(exe_dir(), "pdf")
-        print(pdfs)
         p.map(os.remove, pdfs)
         p.close()
         p.join()
