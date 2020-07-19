@@ -36,6 +36,8 @@ def files_list(directory, files_extension):
 def publish_pdf(source_file):
     """Use the prince command to convert an HTML file to a PDF file and open the PDF file in the default application determined by OS."""    
     os.system(f"prince \"{source_file}\"")
+
+def preview_pdf(source_file):
     webbrowser.open(url=f"file:///{source_file.lower().replace('.html', '.pdf')}", new=1, autoraise=False)
 
 def main():
@@ -46,28 +48,32 @@ def main():
     par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent PDF generation or PDF move to trash jobs (defults to 12)")
     args = par.parse_args()
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
-    # Add a functionality to remove PDFs from the directory.
-
     if not args.concurrent_jobs:
+        """The default number of concurrent jobs."""
         p = Pool(12)
 
     if args.concurrent_jobs:
+        """Custom number of concurrent jobs."""
         jobs = int(args.concurrent_jobs)
         p = Pool(jobs)
 
     if not args.remove_pdfs:
+        """Default behavior - publish PDFs and open preview."""
         source_files = files_list(exe_dir(), "html")
         p.map(publish_pdf, source_files)
+        if not args.no_preview:
+            p.map(preview_pdf, source_files)
         p.close()
         p.join()
 
     if args.remove_pdfs:
+        """Move the PDFs from the script directory to trash."""
         pdfs = files_list(exe_dir(), "pdf")
         p.map(send2trash.send2trash, pdfs)
         p.close()
         p.join()
 
 
-__main__ = os.path.basename(os.path.abspath(sys.argv[0])).replace(".py","")
+__main__ = os.path.basename(os.path.abspath(sys.argv[0])).replace(".py","") # The "__main__" name must be used in the if statement below because of multiprocessing.
 if __name__ == "__main__":
     main()
