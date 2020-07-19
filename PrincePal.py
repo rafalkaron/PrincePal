@@ -46,7 +46,7 @@ def main():
     par.add_argument("-rm", "--remove_pdfs", action="store_true", help="USE WITH CAUTION: Permanently remove PDF files from the script directory")
     par.add_argument("-nopr", "--no_preview", action="store_true", help="prevent PDFs from opening after publication")
     par.add_argument("-nofb", "--no_feedback", action="store_true", help="hides any feedback")
-    par.add_argument("-yolo", "--you_live_only_once", action="store_true", help="combine with the '-rm' argument to permanently remove PDF files from the script directory without confirmation.")
+    par.add_argument("-yolo", "--you_live_only_once", action="store_true", help="combine with the '-rm' argument to permanently remove the PDF files from the script directory without confirmation.")
     par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent jobs (defults to 12)")
     args = par.parse_args()
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
@@ -78,18 +78,26 @@ def main():
         """USE WITH CAUTION: Permanently remove PDF files from the script directory.""" # todo: add a prompt to confirm what you deleted.
         pdfs = files_list(exe_dir(), "pdf")
         if not args.you_live_only_once:
-            prompt = input(f"Do you want to PERMANENTLY REMOVE the following files: {pdfs} [Y/N]").lower()
-            if prompt == "y":
-                p.map(os.remove, pdfs)
-                p.close()
-                p.join()
-            else:
-                print("Keeping your PDFs intact and exiting...")
+            if len(pdfs) == 0:
+                print("Nothing to remove. Exiting...")
                 sys.exit(0)
+            else:
+                prompt = input(f"Do you want to PERMANENTLY REMOVE the following files: {pdfs} [Y/N]").lower()
+                if prompt == "y":
+                    p.map(os.remove, pdfs)
+                    p.close()
+                    p.join()
+                else:
+                    print("Keeping your PDFs intact and exiting...")
+                    sys.exit(0)
         else:
-                p.map(os.remove, pdfs)
-                p.close()
-                p.join()
+                if len(pdfs) == 0:
+                    print("Nothing to remove. Exiting...")
+                    sys.exit(0)
+                else:
+                    p.map(os.remove, pdfs)
+                    p.close()
+                    p.join()
 
 __main__ = os.path.basename(os.path.abspath(sys.argv[0])).replace(".py","") # The "__main__" name must be used in the if statement below because of multiprocessing.
 if __name__ == "__main__":
