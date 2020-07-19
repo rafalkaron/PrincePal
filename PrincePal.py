@@ -83,7 +83,7 @@ def main():
                 print(f"No PDFs in {exe_dir()} to remove. Exiting...")
                 sys.exit(0)
             else:
-                prompt = input(f"Do you want to PERMANENTLY REMOVE the following files:\n * {pdfs_bullet_list}\nEnter: [Y/N]").lower()
+                prompt = input(f"Do you want to PERMANENTLY REMOVE the following files:\n * {pdfs_bullet_list}\nEnter [Y/N]: ").lower()
                 if prompt == "y":
                     p.map(os.remove, pdfs)
                     p.close()
