@@ -11,7 +11,7 @@ from multiprocessing import Pool
 import argparse
 import time
 
-__version__ = "0.4"
+__version__ = "0.5"
 __author__ = "Rafał Karoń <rafalkaron@gmail.com>"
 
 def exe_dir():
