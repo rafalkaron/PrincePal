@@ -10,7 +10,7 @@ import glob
 from multiprocessing import Pool
 import argparse
 
-__version__ = "0.3"
+__version__ = "0.4"
 __author__ = "Rafał Karoń <rafalkaron@gmail.com>"
 
 def exe_dir():
@@ -42,8 +42,8 @@ def preview_pdf(source_file):
 def main():
     par = argparse.ArgumentParser(description="Preview your PDFs like a prince!")
     par.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
-    par.add_argument("-rm", "--remove_pdfs", action="store_true", help="USE WITH CAUTION: Permanently removes PDF files from the script directory")
-    par.add_argument("-nopr", "--no_preview", action="store_true", help="prevents PDFs from opening after publication")
+    par.add_argument("-rm", "--remove_pdfs", action="store_true", help="USE WITH CAUTION: Permanently remove PDF files from the script directory")
+    par.add_argument("-nopr", "--no_preview", action="store_true", help="prevent PDFs from opening after publication")
     par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent jobs (defults to 12)")
     args = par.parse_args()
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
