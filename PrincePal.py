@@ -9,6 +9,7 @@ import os
 import glob
 from multiprocessing import Pool
 import argparse
+import time
 
 __version__ = "0.4"
 __author__ = "Rafał Karoń <rafalkaron@gmail.com>"
@@ -58,8 +59,11 @@ def main():
 
     if not args.remove_pdfs:
         """Publish and open PDFs."""
+        start_time = time.time()
         source_files = files_list(exe_dir(), "html")
         p.map(publish_pdf, source_files)
+        elapsed_time = time.time() - start_time
+        print(f"Converted {len(source_files)} HTML file(s) to PDFs in {int(elapsed_time)} seconds.")
         if not args.no_preview:
             """Prevent PDFs from opening after publication."""
             p.map(preview_pdf, source_files)
@@ -67,7 +71,7 @@ def main():
         p.join()
 
     if args.remove_pdfs:
-        """USE WITH CAUTION: Permanently remove PDF files from the script directory."""
+        """USE WITH CAUTION: Permanently remove PDF files from the script directory.""" # todo: add a prompt to confirm what you deleted.
         pdfs = files_list(exe_dir(), "pdf")
         p.map(os.remove, pdfs)
         p.close()
