@@ -8,6 +8,8 @@ import sys
 import os
 import glob
 from multiprocessing import Pool
+import argparse
+import send2trash
 
 __version__ = "0.3"
 __author__ = "Rafał Karoń <rafalkaron@gmail.com>"
@@ -37,12 +39,25 @@ def publish_pdf(source_file):
     webbrowser.open(url=f"file:///{source_file.lower().replace('.html', '.pdf')}", new=1, autoraise=False)
 
 def main():
+    par = argparse.ArgumentParser(description="Preview your PDFs like a prince!")
+    par.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
+    par.add_argument("-rm", "--remove_pdfs", action="store_true", help="moves PDF files from the script directory to trash")
+    par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent PDF generation jobs (defults to 12)")
+    args = par.parse_args()
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
-    source_files = files_list(exe_dir(), "html")
-    p = Pool(12)
-    p.map(publish_pdf, source_files)
-    p.close()
-    p.join()
+    # Add a functionality to remove PDFs from the directory.
+
+    if not args.remove_pdfs:
+        source_files = files_list(exe_dir(), "html")
+        p = Pool(12)
+        p.map(publish_pdf, source_files)
+        p.close()
+        p.join()
+
+    if args.remove_pdfs:
+        pdfs = files_list(exe_dir(), "pdf")
+        for pdf in pdfs:
+            send2trash.send2trash(pdf)
 
 __main__ = os.path.basename(os.path.abspath(sys.argv[0])).replace(".py","")
 if __name__ == "__main__":
