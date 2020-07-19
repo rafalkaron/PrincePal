@@ -42,22 +42,31 @@ def main():
     par = argparse.ArgumentParser(description="Preview your PDFs like a prince!")
     par.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
     par.add_argument("-rm", "--remove_pdfs", action="store_true", help="moves PDF files from the script directory to trash")
-    par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent PDF generation jobs (defults to 12)")
+    par.add_argument("-nopr", "--no_preview", action="store_true", help="do not automatically open the HTML file with converted clippings")
+    par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent PDF generation or PDF move to trash jobs (defults to 12)")
     args = par.parse_args()
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
     # Add a functionality to remove PDFs from the directory.
 
+    if not args.concurrent_jobs:
+        p = Pool(12)
+
+    if args.concurrent_jobs:
+        jobs = int(args.concurrent_jobs)
+        p = Pool(jobs)
+
     if not args.remove_pdfs:
         source_files = files_list(exe_dir(), "html")
-        p = Pool(12)
         p.map(publish_pdf, source_files)
         p.close()
         p.join()
 
     if args.remove_pdfs:
         pdfs = files_list(exe_dir(), "pdf")
-        for pdf in pdfs:
-            send2trash.send2trash(pdf)
+        p.map(send2trash.send2trash, pdfs)
+        p.close()
+        p.join()
+
 
 __main__ = os.path.basename(os.path.abspath(sys.argv[0])).replace(".py","")
 if __name__ == "__main__":
