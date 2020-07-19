@@ -9,7 +9,7 @@ import os
 import glob
 from multiprocessing import Pool
 
-__version__ = "0.2"
+__version__ = "0.3"
 __author__ = "Rafał Karoń <rafalkaron@gmail.com>"
 
 def exe_dir():
@@ -20,10 +20,6 @@ def exe_dir():
     elif __file__:
         exe_path = os.path.dirname(__file__)
     return exe_path
-    
-def publish_pdf(source_file):
-    """Use the prince command to convert an HTML file to a PDF file."""    
-    os.system(f"prince \"{source_file}\"")
 
 def files_list(directory, files_extension):
     """Return a list of files with a given extension in a directory."""
@@ -35,27 +31,19 @@ def files_list(directory, files_extension):
         files_list = files_list_lowercase + files_list_uppercase
     return files_list
 
-def preview(output_file):
-    """Open the converted PDF file in the default application determined by your OS."""
-    webbrowser.open(url=f"file:///{output_file}", new=1, autoraise=False)
+def publish_pdf(source_file):
+    """Use the prince command to convert an HTML file to a PDF file and open the PDF file in the default application determined by OS."""    
+    os.system(f"prince \"{source_file}\"")
+    webbrowser.open(url=f"file:///{source_file.lower().replace('.html', '.pdf')}", new=1, autoraise=False)
 
 def main():
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
-    """
-    # Singleprocessing loop
-    for source_file in files_list(exe_dir(), "html"):
-        publish_pdf(source_file)
-        preview(source_file.lower().replace(".html", ".pdf"))
-    """
-    # Multiprocessing
     source_files = files_list(exe_dir(), "html")
-    p = Pool(10)
+    p = Pool(12)
     p.map(publish_pdf, source_files)
-    # p.map(preview, files_list(exe_dir(), "pdf")) # This opens new tabs for every PDF in the current folder now.
-    for file in source_files:
-        preview(file.lower().replace(".html", ".pdf"))
     p.close()
     p.join()
 
-if __name__ == '__main__':    
+__main__ = os.path.basename(os.path.abspath(sys.argv[0])).replace(".py","")
+if __name__ == "__main__":
     main()
