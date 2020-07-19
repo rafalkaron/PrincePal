@@ -7,7 +7,8 @@
 * Begin developing a Prince PDF style. See [Your First Document](https://www.princexml.com/doc/first-doc/).
 
 **Procedure:**
-1. Put **PrincePal** in the directory where you keep the HTML files that you want to convert to PDFs.
+1. Put **PrincePal** in the directory where you keep the HTML files that you want to convert to PDFs.  
+**TIP:** Ensure that the HTML files do not contain any broken references because they greatly slow conversion down.
 1. Do one of the following:
     * To convert HTML files in the **PrincePal** directory to PDFs and open preview, run **PrincePal**.  
     **NOTE:** Every PDF file opens in the default application determined by your OS settings. I recommend setting a web browser (e.g. Chrome or Brave) to open PDFs by default in your OS settings. This way, each time you run **PrincePal**, a new tab opens so you can quickly compare your styling modifications.
