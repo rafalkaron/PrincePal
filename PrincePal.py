@@ -45,7 +45,7 @@ def main():
     par.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
     par.add_argument("-rm", "--remove_pdfs", action="store_true", help="USE WITH CAUTION: Permanently remove PDF files from the script directory")
     par.add_argument("-nopr", "--no_preview", action="store_true", help="prevent PDFs from opening after publication")
-    par.add_argument("-nofb", "--no_feedback", action="store_true", help="hides any feedback")
+    par.add_argument("-nofb", "--no_feedback", action="store_true", help="hides non-critical feedback")
     par.add_argument("-yolo", "--you_live_only_once", action="store_true", help="combine with the '-rm' argument to permanently remove the PDF files from the script directory without confirmation.")
     par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent jobs (defults to 12)")
     args = par.parse_args()
@@ -75,7 +75,7 @@ def main():
         p.join()
 
     if args.remove_pdfs:
-        """USE WITH CAUTION: Permanently remove PDF files from the script directory.""" # todo: add a prompt to confirm what you deleted.
+        """USE WITH CAUTION: Permanently remove PDF files from the script directory."""
         pdfs = files_list(exe_dir(), "pdf")
         if not args.you_live_only_once:
             if len(pdfs) == 0:
