@@ -41,6 +41,7 @@ def preview_pdf(source_file):
     webbrowser.open(url=f"file:///{source_file.lower().replace('.html', '.pdf')}", new=1, autoraise=False)
 
 def main():
+    sys.tracebacklimit = 0 # Disables traceback messages
     par = argparse.ArgumentParser(description="Preview your PDFs like a prince!")
     par.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
     par.add_argument("-rm", "--remove_pdfs", action="store_true", help="USE WITH CAUTION: Permanently remove PDF files from the script directory")
@@ -53,8 +54,7 @@ def main():
     if not args.concurrent_jobs:
         """The default number of concurrent jobs."""
         p = Pool(12)
-
-    if args.concurrent_jobs:
+    elif args.concurrent_jobs:
         """Custom number of concurrent jobs."""
         jobs = int(args.concurrent_jobs)
         p = Pool(jobs)
@@ -73,32 +73,28 @@ def main():
             p.map(preview_pdf, source_files)
         p.close()
         p.join()
-
-    if args.remove_pdfs:
+    elif args.remove_pdfs:
         """USE WITH CAUTION: Permanently remove PDF files from the script directory."""
         pdfs = files_list(exe_dir(), "pdf")
         pdfs_bullet_list = "\n * ".join([str(x) for x in pdfs])
         if not args.you_live_only_once:
             if len(pdfs) == 0:
-                print(f"No PDFs in {exe_dir()} to remove. Exiting...")
-                sys.exit(0)
+                raise Exception(f"No PDFs in {exe_dir()} to remove. Exiting...")
+            prompt = input(f"Do you want to PERMANENTLY REMOVE the following files:\n * {pdfs_bullet_list}\nEnter [Y/N]: ").lower()
+            if prompt == "y":
+                p.map(os.remove, pdfs)
+                p.close()
+                p.join()
+                print("Removed the PDFs.")
             else:
-                prompt = input(f"Do you want to PERMANENTLY REMOVE the following files:\n * {pdfs_bullet_list}\nEnter [Y/N]: ").lower()
-                if prompt == "y":
-                    p.map(os.remove, pdfs)
-                    p.close()
-                    p.join()
-                else:
-                    print("Keeping your PDFs intact and exiting...")
-                    sys.exit(0)
+                print("Keeping your PDFs intact and exiting...")
+                sys.exit(0)
         else:
-                if len(pdfs) == 0:
-                    print(f"No PDFs in {exe_dir()} to remove. Exiting...")
-                    sys.exit(0)
-                else:
-                    p.map(os.remove, pdfs)
-                    p.close()
-                    p.join()
+            if len(pdfs) == 0:
+                raise Exception(f"No PDFs in {exe_dir()} to remove. Exiting...")
+            p.map(os.remove, pdfs)
+            p.close()
+            p.join()
 
 __main__ = os.path.basename(os.path.abspath(sys.argv[0])).replace(".py","") # The "__main__" name must be used in the if statement below because of multiprocessing.
 if __name__ == "__main__":
