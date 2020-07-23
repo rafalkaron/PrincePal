@@ -14,7 +14,8 @@
 1. If needed, accept any security prompts. See [Accepting macOS Security Prompts](https://github.com/rafalkaron/PrincePal/wiki/Accepting-macOS-Security-Prompts) or [Accepting Windows Security Prompts](https://github.com/rafalkaron/PrincePal/wiki/Accepting-Windows-Security-Prompts).
 2. Do one of the following:
     * To convert HTML files in the **PrincePal** directory to PDFs and open preview, run **PrincePal**.  
-    **NOTE:** Every PDF file opens in the default application determined by your OS settings. I recommend setting a web browser (e.g. Chrome or Brave) to open PDFs by default in your OS settings. This way, each time you run **PrincePal**, a new tab opens so you can quickly compare your styling modifications.
+    **NOTE:** You may need to run **PrincePal** as an administrator.  
+    Every PDF file opens in the default application determined by your OS settings. I recommend setting a web browser (e.g. Chrome or Brave) to open PDFs by default in your OS settings. This way, each time you run **PrincePal**, a new tab opens so you can quickly compare your styling modifications.
     * To convert HTML files in the **PrincePal** directory to PDFs, run **PrincePal** with the *--no_preview* attribute.
     * **USE WITH CAUTION:** To remove every PDF file in the **PrincePal** directory, run **PrincePal** with the *--remove_pdfs* attribute.
     * To set the number of concurrent jobs, run **PrincePal** with the *--concurrent_jobs* attribute.  
