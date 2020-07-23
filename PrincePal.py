@@ -64,10 +64,12 @@ def main():
         if not args.no_feedback:
             start_time = time.time()
         source_files = files_list(exe_dir(), "html")
+        if len(source_files) == 0:
+            raise Exception(f"No HTML files to convert in {exe_dir()}\nMove PrincePal to the directory with HTML files that you want to convert.")
         p.map(publish_pdf, source_files)
         if not args.no_feedback:
             elapsed_time = time.time() - start_time
-            print(f"Converted {len(source_files)} HTML file(s) to PDFs in {int(elapsed_time)} seconds.")
+            print(f"Converted {len(source_files)} HTML file(s) to PDFs in {round(elapsed_time, 3)} seconds.")
         if not args.no_preview:
             """Prevent PDFs from opening after publication."""
             p.map(preview_pdf, source_files)
