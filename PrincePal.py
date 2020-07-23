@@ -50,7 +50,8 @@ def main():
     par.add_argument("-yolo", "--you_live_only_once", action="store_true", help="combine with the '-rm' argument to permanently remove the PDF files from the script directory without confirmation.")
     par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs_number", help="determine the number of concurrent jobs (defults to 12)")
     args = par.parse_args()
-    # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save
+    # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save.
+    # Add an exception that will terminate the script if no prince installation is found.
     if not args.concurrent_jobs:
         """The default number of concurrent jobs."""
         p = Pool(12)
