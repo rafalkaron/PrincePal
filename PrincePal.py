@@ -7,7 +7,7 @@ import webbrowser
 import sys
 import os
 import glob
-from multiprocessing import Pool
+import multiprocessing
 import argparse
 import time
 
@@ -54,11 +54,11 @@ def main():
     # Add an exception that will terminate the script if no prince installation is found.
     if not args.concurrent_jobs:
         """The default number of concurrent jobs."""
-        p = Pool(12)
+        p = multiprocessing.Pool(12)
     elif args.concurrent_jobs:
         """Custom number of concurrent jobs."""
         jobs = int(args.concurrent_jobs)
-        p = Pool(jobs)
+        p = multiprocessing.Pool(jobs)
 
     if not args.remove_pdfs:
         """Publish and open PDFs."""
@@ -101,4 +101,5 @@ def main():
 
 __main__ = os.path.basename(os.path.abspath(sys.argv[0])).replace(".py","") # The "__main__" name must be used in the if statement below because of multiprocessing.
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
     main()
