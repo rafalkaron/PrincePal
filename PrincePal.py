@@ -52,6 +52,7 @@ def main():
     args = par.parse_args()
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save.
     # Add an exception that will terminate the script if no prince installation is found.
+    # Consider adding custom input/output folder options
     if not args.concurrent_jobs:
         """The default number of concurrent jobs."""
         p = multiprocessing.Pool(12)
