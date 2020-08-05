@@ -34,16 +34,9 @@ def files_list(directory, files_extension):
         files_list = files_list_lowercase + files_list_uppercase
     return files_list
 
-def commands_list(directory, files_extension, output="", style=""):
-    """Return a list of files with a given extension in a directory."""
+def commands_list(f_list=[], output="", style=""):
     command_list = []
-    if os.name == "nt":     # Windows ignores file extension case. Getting uppercase and lowercase lists generates duplicates.
-        files_list = glob.glob(f"{directory}/*.{files_extension}")
-    if os.name == "posix":  # macOS does not ignore file extension case.
-        files_list_lowercase = glob.glob(f"{directory}/*.{files_extension.lower()}")
-        files_list_uppercase = glob.glob(f"{directory}/*.{files_extension.upper()}")
-        files_list = files_list_lowercase + files_list_uppercase
-    for file in files_list:
+    for file in f_list:
         command_list.append(f"prince \"{file}\" {output} {style}")
     return command_list
 
@@ -108,7 +101,7 @@ def main():
 
     # Publishing
     """Publish and open PDFs."""
-    #start_time = time.time()
+    start_time = time.time()
     
     if args.output:
         command_output = f" -o \"{args.output}\""
@@ -120,22 +113,22 @@ def main():
         command_style = ""
 
     if args.current_working_directory:
-        p.map(publish_pdf, commands_list(exe_dir(), "html", command_output, command_style))
+        source_files = files_list(exe_dir(), "html")
+        p.map(publish_pdf, commands_list(source_files, command_output, command_style))
     
     if args.input:
         if os.path.isdir(args.input):
-            p.map(publish_pdf, commands_list(args.input, "html", command_output, command_style))
+            source_files = files_list(args.input, "html")
+            p.map(publish_pdf, commands_list(source_files, command_output, command_style))
         elif os.path.isfile(args.input):
+            source_files = args.input
             publish_pdf(f"prince \"{args.input}\" {command_output} {command_style}")
     
-    #if args.style:
-    #    print(commands_list(args.input, "html", style=command_style))
-    #    p.map(publish_pdf, commands_list(args.input, "html", style=command_style))
-
-    #elapsed_time = time.time() - start_time
+    elapsed_time = time.time() - start_time
     #print(f"Converted {len(source)} HTML file(s) to PDFs in {round(elapsed_time, 3)} seconds.")
-    #if not args.no_preview:
-    #    p.map(preview_pdf, source)
+    if not args.no_preview:
+        p.map(preview_pdf, source_files)
+
     p.close()
     p.join()
 
