@@ -60,9 +60,10 @@ def main():
     par.add_argument("-o", "--output", metavar="store_true", help="Pick the output folder on your own")
     par.add_argument("-s", "--style", metavar="store_true", help="Pick the output folder on your own")
     args = par.parse_args()
+    sys.tracebacklimit = 0 # Disables traceback messages
+
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save.
     # Add an exception that will terminate the script if no prince installation is found.
-    # Consider adding custom input/output folder options
     # Consider adding an option to close every web browser tab
     
     # Concurrent jobs settings
@@ -100,7 +101,6 @@ def main():
         sys.exit(0)
 
     # Publishing
-    """Publish and open PDFs."""
     start_time = time.time()
     
     if args.output:
@@ -115,6 +115,8 @@ def main():
     if args.current_working_directory:
         os.chdir(exe_dir())
         source_files = files_list(exe_dir(), "html")
+        if len(source_files) == 0:
+            raise Exception(f"No HTML files to convert in {exe_dir()}\nMove PrincePal to the directory with HTML files that you want to convert.")
         p.map(publish_pdf, commands_list(source_files, command_output, command_style))
     
     if args.input:
@@ -126,7 +128,8 @@ def main():
             publish_pdf(f"prince \"{args.input}\" {command_output} {command_style}")
     
     elapsed_time = time.time() - start_time
-    #print(f"Converted {len(source)} HTML file(s) to PDFs in {round(elapsed_time, 3)} seconds.")
+    print(f"Converted {len(source_files)} HTML file(s) to PDFs in {round(elapsed_time, 3)} seconds.")
+    
     if not args.no_preview:
         if args.current_working_directory:
             p.map(preview_pdf, source_files)
@@ -138,28 +141,6 @@ def main():
     p.close()
     p.join()
 
-"""
-    if args.current_working_directory:
-        source = files_list(exe_dir(), "html")
-        p.map(publish_pdf, source)
-        if not args.no_preview:
-            p.map(preview_pdf, source)
-
-    elif args.input:
-        if os.path.isdir(args.input):
-            source = files_list(args.input, "html")
-            p.map(publish_pdf, source)
-            if not args.no_preview:
-                p.map(preview_pdf, source)
-
-        elif os.path.isfile(args.input):
-            source = args.input
-            publish_pdf(source)
-            if not args.no_preview:
-                preview_pdf(source)
-"""
-    #if len(source) == 0:
-    #    raise Exception(f"No HTML files to convert in {exe_dir()}\nMove PrincePal to the directory with HTML files that you want to convert.")
     
 
 
