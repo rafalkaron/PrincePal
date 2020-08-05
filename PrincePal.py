@@ -113,6 +113,7 @@ def main():
         command_style = ""
 
     if args.current_working_directory:
+        os.chdir(exe_dir())
         source_files = files_list(exe_dir(), "html")
         p.map(publish_pdf, commands_list(source_files, command_output, command_style))
     
@@ -127,7 +128,12 @@ def main():
     elapsed_time = time.time() - start_time
     #print(f"Converted {len(source)} HTML file(s) to PDFs in {round(elapsed_time, 3)} seconds.")
     if not args.no_preview:
-        p.map(preview_pdf, source_files)
+        if args.current_working_directory:
+            p.map(preview_pdf, source_files)
+        elif args.input and os.path.isfile(args.input):
+            preview_pdf(source_files)
+        elif args.input and os.path.dirname(args.input):
+            p.map(preview_pdf, source_files)
 
     p.close()
     p.join()
