@@ -126,7 +126,7 @@ def main():
         if os.path.isdir(args.input):
             p.map(publish_pdf, commands_list(args.input, "html", command_output, command_style))
         elif os.path.isfile(args.input):
-            publish_pdf(f"prince \"{args.input}\"")
+            publish_pdf(f"prince \"{args.input}\" {command_output} {command_style}")
     
     #if args.style:
     #    print(commands_list(args.input, "html", style=command_style))
