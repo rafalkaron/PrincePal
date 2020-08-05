@@ -110,21 +110,27 @@ def main():
     """Publish and open PDFs."""
     #start_time = time.time()
     
-    command_output = f" -o \"{args.output}\""
-    command_style = f" -s \"{args.style}\""
+    if args.output:
+        command_output = f" -o \"{args.output}\""
+    elif not args.output:
+        command_output = ""
+    if args.style:
+        command_style = f" -s \"{args.style}\""
+    elif not args.style:
+        command_style = ""
 
     if args.current_working_directory:
-        p.map(publish_pdf, commands_list(exe_dir(), "html"))
+        p.map(publish_pdf, commands_list(exe_dir(), "html", command_output, command_style))
     
     if args.input:
         if os.path.isdir(args.input):
-            p.map(publish_pdf, commands_list(args.input, "html"))
+            p.map(publish_pdf, commands_list(args.input, "html", command_output, command_style))
         elif os.path.isfile(args.input):
             publish_pdf(f"prince \"{args.input}\"")
     
-    if args.style:
-        print(commands_list(args.input, "html", style=command_style))
-        p.map(publish_pdf, commands_list(args.input, "html", style=command_style))
+    #if args.style:
+    #    print(commands_list(args.input, "html", style=command_style))
+    #    p.map(publish_pdf, commands_list(args.input, "html", style=command_style))
 
     #elapsed_time = time.time() - start_time
     #print(f"Converted {len(source)} HTML file(s) to PDFs in {round(elapsed_time, 3)} seconds.")
