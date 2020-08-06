@@ -11,7 +11,7 @@ import multiprocessing
 import argparse
 import time
 
-__version__ = "0.5"
+__version__ = "0.7"
 __author__ = "Rafał Karoń <rafalkaron@gmail.com>"
 
 
@@ -56,16 +56,18 @@ def main():
     par.add_argument("-yolo", "--you_live_only_once", action="store_true", help="combine with the '-rm' argument to permanently remove the PDF files from the script directory without confirmation.")
     par.add_argument("-jobs", "--concurrent_jobs", metavar="jobs", help="determine the number of concurrent jobs (defults to 12)")
     par.add_argument("-cwd", "--current_working_directory", action="store_true", help="Use HTML files in the script directory as an input")
-    par.add_argument("-i", "--input", metavar="source", help="Pick a source file or source folder on your own")
-    par.add_argument("-o", "--output", metavar="store_true", help="Pick the output folder on your own")
-    par.add_argument("-s", "--style", metavar="store_true", help="Pick the output folder on your own")
+    par.add_argument("-i", "--input", help="Pick a source file or source folder on your own")
+    par.add_argument("-o", "--output", help="Pick the output folder on your own")
+    par.add_argument("-s", "--style", help="Pick the output folder on your own")
     args = par.parse_args()
     sys.tracebacklimit = 0 # Disables traceback messages
 
     # Consider creating an if = true loop listening to any saves in the script directory/children directories. run script on save.
     # Add an exception that will terminate the script if no prince installation is found.
     # Consider adding an option to close every web browser tab
-    
+    if len(sys.argv)==1:
+        par.print_help(sys.stderr)
+        sys.exit(0)
     # Concurrent jobs settings
     if not args.concurrent_jobs:
         """The default number of concurrent jobs."""
@@ -128,7 +130,10 @@ def main():
             publish_pdf(f"prince \"{args.input}\" {command_output} {command_style}")
     
     elapsed_time = time.time() - start_time
-    print(f"Converted {len(source_files)} HTML file(s) to PDFs in {round(elapsed_time, 3)} seconds.")
+    if args.input and os.path.isfile(args.input):
+        print(f"Converted 1 HTML file to PDFs in {round(elapsed_time, 3)} seconds.")
+    else:
+        print(f"Converted {len(source_files)} HTML file(s) to PDFs in {round(elapsed_time, 3)} seconds.")
     
     if not args.no_preview:
         if args.current_working_directory:
@@ -137,6 +142,8 @@ def main():
             preview_pdf(source_files)
         elif args.input and os.path.dirname(args.input):
             p.map(preview_pdf, source_files)
+
+
 
     p.close()
     p.join()
