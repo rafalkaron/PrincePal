@@ -9,7 +9,7 @@
 * Begin developing a Prince PDF style. See [Your First Document](https://www.princexml.com/doc/first-doc/).  
 **TIP:** Ensure that the HTML files do not contain any broken references because they significantly slow down conversion.
 
-**Do any of the following: **
+**Do any of the following:** 
 * To convert the HTML files in the **PrincePal** directory:
     * Put **PrincePal** in the HTML files directory.
     * Run **PrincePal** with the *-cwd* attribute.
